@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity Code Interview</title>
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+
+    <!-- CodeMirror 6 CSS -->
+    <style>
+        .cm-editor { height: 100%; font-size: 16px; }
+        .cm-scroller { overflow: auto; }
+    </style>
+    
+    <!-- Pyodide -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+</head>
+<body class="bg-gray-900 text-white h-screen flex flex-col overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-blue-400">Antigravity <span class="text-white">Code Interview</span></h1>
+        <div class="flex items-center gap-4">
+            <div id="connection-status" class="text-sm text-yellow-500">Connecting...</div>
+            <button id="run-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium transition-colors flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                </svg>
+                Run Code
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex overflow-hidden">
+        
+        <!-- Editor Section -->
+        <section class="flex-1 flex flex-col border-r border-gray-700 relative">
+            <div class="bg-gray-800 px-4 py-2 text-xs text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-700">
+                main.py
+            </div>
+            <div id="editor" class="flex-1 overflow-hidden bg-[#282c34]"></div>
+        </section>
+
+        <!-- Output Section -->
+        <section class="w-1/3 flex flex-col bg-gray-900">
+            <div class="bg-gray-800 px-4 py-2 text-xs text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-700 flex justify-between">
+                <span>Output</span>
+                <button id="clear-output" class="hover:text-white transition-colors">Clear</button>
+            </div>
+            <div id="output" class="flex-1 p-4 font-mono text-sm overflow-auto whitespace-pre-wrap text-gray-300"></div>
+        </section>
+
+    </main>
+
+    <!-- Initial State Data -->
+    <script>
+        // Generate a random client ID
+        const clientId = Math.random().toString(36).substring(7);
+        // Get room ID from URL or default to 'default-room'
+        const roomId = "{{ room_id }}" || "default-room";
+        
+        // Update URL if room_id was missing
+        if (!window.location.pathname.includes('/room/')) {
+            window.history.replaceState({}, '', `/room/${roomId}`);
+        }
+    </script>
+
+    <!-- App Logic -->
+    <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>
