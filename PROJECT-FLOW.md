@@ -82,4 +82,4 @@ Instructions should be inside the `README.md` file:
 
 Begin the initial implementation now.
 
-## NEXT STEPS:
+# NEXT STEPS:
