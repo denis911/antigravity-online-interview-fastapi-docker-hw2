@@ -44,6 +44,25 @@ This project uses `uv` for dependency management.
     uv sync
     ```
 
+## Testing
+
+To run the integration tests:
+
+1.  **Install Test Dependencies**:
+    ```bash
+    cd backend
+    uv add pytest httpx
+    ```
+
+2.  **Run Tests**:
+    ```bash
+    uv run pytest
+    ```
+    Or if you encounter issues with output capture:
+    ```bash
+    uv run python manual_test.py
+    ```
+
 ## Running the Application
 
 1.  **Start the Backend**:

@@ -4,6 +4,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 
 from room_manager import manager
 
@@ -12,6 +13,15 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Coding Interview Platform")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # Mount static files
 # We assume the frontend folder is at the same level as backend
@@ -47,6 +57,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, client_id: str)
     """
     WebSocket endpoint for real-time collaboration.
     """
+    logger.info(f"WebSocket connection attempt: Room={room_id}, Client={client_id}")
     await manager.connect(websocket, room_id)
     try:
         while True:
@@ -54,5 +65,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, client_id: str)
             # Broadcast the received data to other clients in the room
             await manager.broadcast(data, room_id, websocket)
     except WebSocketDisconnect:
+        logger.info(f"WebSocket disconnected: Room={room_id}, Client={client_id}")
         manager.disconnect(websocket, room_id)
         await manager.broadcast({"type": "user_left", "client_id": client_id}, room_id, websocket)

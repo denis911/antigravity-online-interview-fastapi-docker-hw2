@@ -82,4 +82,9 @@ Instructions should be inside the `README.md` file:
 
 Begin the initial implementation now.
 
-# NEXT STEPS:
+# TESTS:
+
+- [x] Integration tests created (`backend/tests/test_integration.py`)
+- [x] WebSocket connection verified (Fixed `app.js` imports and added CORS)
+- [x] Manual test script provided (`backend/manual_test.py`)
+

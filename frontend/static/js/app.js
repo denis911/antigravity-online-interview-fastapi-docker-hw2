@@ -1,23 +1,51 @@
-import { EditorView, basicSetup } from "https://esm.sh/codemirror@6.0.1"
-import { EditorState } from "https://esm.sh/@codemirror/state@6.0.1"
-import { python } from "https://esm.sh/@codemirror/lang-python@6.0.1"
-import { oneDark } from "https://esm.sh/@codemirror/theme-one-dark@6.0.1"
-import { keymap } from "https://esm.sh/@codemirror/view@6.0.1"
-import { indentWithTab } from "https://esm.sh/@codemirror/commands@6.0.1"
+import { basicSetup, EditorView } from "https://esm.sh/codemirror"
+import { EditorState } from "https://esm.sh/@codemirror/state"
+import { python } from "https://esm.sh/@codemirror/lang-python"
+import { oneDark } from "https://esm.sh/@codemirror/theme-one-dark"
+import { keymap } from "https://esm.sh/@codemirror/view"
+import { indentWithTab } from "https://esm.sh/@codemirror/commands"
+
+const outputDiv = document.getElementById('output');
+const statusDiv = document.getElementById('connection-status');
+const runBtn = document.getElementById('run-btn');
+
+// Debug Log
+outputDiv.innerText = "App.js loaded. Initializing...\n> ";
+
+// --- WebSocket Setup (Moved to top) ---
+const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+const wsUrl = `${protocol}://${window.location.host}/ws/${roomId}/${clientId}`;
+const socket = new WebSocket(wsUrl);
+
+socket.onopen = () => {
+    statusDiv.innerText = "Connected";
+    statusDiv.classList.remove("text-yellow-500", "text-red-500");
+    statusDiv.classList.add("text-green-500");
+    outputDiv.innerText += "WebSocket Connected.\n> ";
+};
+
+socket.onclose = () => {
+    statusDiv.innerText = "Disconnected";
+    statusDiv.classList.remove("text-green-500", "text-yellow-500");
+    statusDiv.classList.add("text-red-500");
+    outputDiv.innerText += "WebSocket Disconnected.\n> ";
+};
+
+socket.onerror = (error) => {
+    outputDiv.innerText += "WebSocket Error.\n> ";
+    console.error("WebSocket Error:", error);
+};
 
 // --- Pyodide Setup ---
 let pyodide = null;
-const outputDiv = document.getElementById('output');
-const runBtn = document.getElementById('run-btn');
-const statusDiv = document.getElementById('connection-status');
 
 async function loadPyodideMain() {
-    outputDiv.innerText = "Loading Python environment...";
+    outputDiv.innerText += "Loading Python environment...\n> ";
     try {
         pyodide = await loadPyodide();
-        outputDiv.innerText += "\nPython ready.\n> ";
+        outputDiv.innerText += "Python ready.\n> ";
     } catch (err) {
-        outputDiv.innerText = `Error loading Pyodide: ${err}`;
+        outputDiv.innerText += `Error loading Pyodide: ${err}\n> `;
     }
 }
 loadPyodideMain();
@@ -48,23 +76,6 @@ const view = new EditorView({
     parent: document.getElementById('editor')
 });
 
-// --- WebSocket Setup ---
-const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-const wsUrl = `${protocol}://${window.location.host}/ws/${roomId}/${clientId}`;
-const socket = new WebSocket(wsUrl);
-
-socket.onopen = () => {
-    statusDiv.innerText = "Connected";
-    statusDiv.classList.remove("text-yellow-500", "text-red-500");
-    statusDiv.classList.add("text-green-500");
-};
-
-socket.onclose = () => {
-    statusDiv.innerText = "Disconnected";
-    statusDiv.classList.remove("text-green-500", "text-yellow-500");
-    statusDiv.classList.add("text-red-500");
-};
-
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
@@ -93,12 +104,12 @@ function sendUpdate(content) {
 // --- Execution Logic ---
 runBtn.addEventListener('click', async () => {
     if (!pyodide) {
-        outputDiv.innerText += "\nPython is still loading...\n";
+        outputDiv.innerText += "Python is still loading...\n> ";
         return;
     }
 
     const code = view.state.doc.toString();
-    outputDiv.innerText = "Running...\n";
+    outputDiv.innerText += "Running...\n";
 
     // Redirect stdout
     pyodide.setStdout({
