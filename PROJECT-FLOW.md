@@ -88,3 +88,9 @@ Begin the initial implementation now.
 - [x] WebSocket connection verified (Fixed `app.js` imports and added CORS)
 - [x] Manual test script provided (`backend/manual_test.py`)
 
+# OpenAPI:
+
+- [x] OpenAPI specification generated (`openapi.json` in root)
+- [x] Export script created (`backend/export_openapi.py`)
+- [x] Documentation updated in README
+

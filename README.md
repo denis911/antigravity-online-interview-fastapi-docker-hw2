@@ -63,6 +63,21 @@ To run the integration tests:
     uv run python manual_test.py
     ```
 
+## API Documentation
+
+The backend provides automatic interactive API documentation.
+
+- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+- **OpenAPI JSON**: [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json)
+
+A static copy of the OpenAPI specification is available in the root directory: `openapi.json`.
+You can regenerate it by running:
+```bash
+cd backend
+uv run python export_openapi.py
+```
+
 ## Running the Application
 
 1.  **Start the Backend**:
