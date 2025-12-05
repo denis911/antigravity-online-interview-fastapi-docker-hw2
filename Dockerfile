@@ -5,7 +5,11 @@ FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 # Set working directory
+# Set working directory
 WORKDIR /app
+
+# Configure uv to use a specific environment location invisible to volume mounts
+ENV UV_PROJECT_ENVIRONMENT="/app/.venv"
 
 # Copy dependency files first to leverage cache
 COPY backend/pyproject.toml backend/uv.lock /app/backend/
@@ -19,7 +23,7 @@ COPY backend /app/backend
 COPY frontend /app/frontend
 
 # Add virtual environment to PATH
-ENV PATH="/app/backend/.venv/bin:$PATH"
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Expose port
 EXPOSE 8000
