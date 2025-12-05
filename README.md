@@ -10,6 +10,7 @@ An end-to-end real-time collaborative coding interview platform built with FastA
     - **JavaScript**: Executed via the browser's native engine.
 - **Secure Code Execution**: Code runs entirely in the browser. No user code is ever executed on the server.
 - **Modern UI**: Clean, dark-themed interface using TailwindCSS.
+- **Simplified Architecture**: No Node.js required. The FastAPI backend serves the frontend directly. No build steps, no complex toolchains—just run and go.
 - **No Node.js**: Frontend dependencies are loaded via CDNs.
 
 ## Project Structure
@@ -17,6 +18,10 @@ An end-to-end real-time collaborative coding interview platform built with FastA
 ```
 .
 ├── backend/
+│   ├── tests/            # Integration tests
+│   │   ├── conftest.py
+│   │   └── test_integration.py
+│   ├── export_openapi.py # Script to generate OpenAPI JSON
 │   ├── main.py           # FastAPI application entry point
 │   ├── room_manager.py   # WebSocket connection manager
 │   └── pyproject.toml    # Python dependencies
@@ -27,6 +32,7 @@ An end-to-end real-time collaborative coding interview platform built with FastA
 │   └── templates/
 │       └── index.html    # Main HTML template
 ├── AGENTS.md             # Agent rules
+├── openapi.json          # Static OpenAPI specification
 ├── PROJECT-FLOW.md       # Project flow and prompt
 └── README.md             # This file
 ```
