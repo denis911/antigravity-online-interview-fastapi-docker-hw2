@@ -33,6 +33,7 @@ An end-to-end real-time collaborative coding interview platform built with FastA
 │       └── index.html    # Main HTML template
 ├── AGENTS.md             # Agent rules
 ├── openapi.json          # Static OpenAPI specification
+├── .dockerignore         # Docker build exclusions
 ├── PROJECT-FLOW.md       # Project flow and prompt
 └── README.md             # This file
 ```
@@ -93,6 +94,7 @@ uv run python export_openapi.py
     ```bash
     docker compose up --build
     ```
+    *Note: The project includes a `.dockerignore` file to prevent local files (like your local `.venv` or `__pycache__`) from interfering with the container build. This ensures the container always builds in a clean environment.*
 
 2.  **Access the App**:
     Open [http://localhost:8000](http://localhost:8000) in your browser.

@@ -106,5 +106,6 @@ Begin the initial implementation now.
 
 - [x] Dockerfile created
 - [x] Docker Compose configuration created
+- [x] .dockerignore created to prevent venv conflicts
 - [x] Documentation updated
 
