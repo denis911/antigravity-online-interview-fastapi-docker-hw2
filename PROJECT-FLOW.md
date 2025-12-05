@@ -95,3 +95,10 @@ Begin the initial implementation now.
 - [x] Export script created (`backend/export_openapi.py`)
 - [x] Documentation updated in README
 
+# JavaScript Support:
+
+- [x] Language selector added to UI
+- [x] CodeMirror configured for JS syntax highlighting
+- [x] JS execution implemented (client-side)
+- [x] Documentation updated
+

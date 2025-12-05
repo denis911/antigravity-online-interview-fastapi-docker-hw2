@@ -1,6 +1,7 @@
 import { basicSetup, EditorView } from "https://esm.sh/codemirror"
-import { EditorState } from "https://esm.sh/@codemirror/state"
+import { EditorState, Compartment } from "https://esm.sh/@codemirror/state"
 import { python } from "https://esm.sh/@codemirror/lang-python"
+import { javascript } from "https://esm.sh/@codemirror/lang-javascript"
 import { oneDark } from "https://esm.sh/@codemirror/theme-one-dark"
 import { keymap } from "https://esm.sh/@codemirror/view"
 import { indentWithTab } from "https://esm.sh/@codemirror/commands"
@@ -8,11 +9,12 @@ import { indentWithTab } from "https://esm.sh/@codemirror/commands"
 const outputDiv = document.getElementById('output');
 const statusDiv = document.getElementById('connection-status');
 const runBtn = document.getElementById('run-btn');
+const languageSelect = document.getElementById('language-select');
 
 // Debug Log
 outputDiv.innerText = "App.js loaded. Initializing...\n> ";
 
-// --- WebSocket Setup (Moved to top) ---
+// --- WebSocket Setup ---
 const protocol = window.location.protocol === "https:" ? "wss" : "ws";
 const wsUrl = `${protocol}://${window.location.host}/ws/${roomId}/${clientId}`;
 const socket = new WebSocket(wsUrl);
@@ -52,6 +54,7 @@ loadPyodideMain();
 
 // --- CodeMirror Setup ---
 let isRemoteUpdate = false;
+const languageConf = new Compartment();
 
 const updateListener = EditorView.updateListener.of((update) => {
     if (update.docChanged && !isRemoteUpdate) {
@@ -65,7 +68,7 @@ const startState = EditorState.create({
     extensions: [
         basicSetup,
         keymap.of([indentWithTab]),
-        python(),
+        languageConf.of(python()),
         oneDark,
         updateListener
     ]
@@ -74,6 +77,30 @@ const startState = EditorState.create({
 const view = new EditorView({
     state: startState,
     parent: document.getElementById('editor')
+});
+
+// Language Switching
+languageSelect.addEventListener('change', (e) => {
+    const lang = e.target.value;
+    if (lang === 'python') {
+        view.dispatch({
+            effects: languageConf.reconfigure(python())
+        });
+        if (view.state.doc.toString().startsWith("// Write your JS")) {
+            view.dispatch({
+                changes: { from: 0, to: view.state.doc.length, insert: "# Write your Python code here\nprint('Hello, World!')" }
+            });
+        }
+    } else if (lang === 'javascript') {
+        view.dispatch({
+            effects: languageConf.reconfigure(javascript())
+        });
+        if (view.state.doc.toString().startsWith("# Write your Python")) {
+            view.dispatch({
+                changes: { from: 0, to: view.state.doc.length, insert: "// Write your JS code here\nconsole.log('Hello, JS!');" }
+            });
+        }
+    }
 });
 
 socket.onmessage = (event) => {
@@ -103,26 +130,46 @@ function sendUpdate(content) {
 
 // --- Execution Logic ---
 runBtn.addEventListener('click', async () => {
-    if (!pyodide) {
-        outputDiv.innerText += "Python is still loading...\n> ";
-        return;
-    }
-
+    const lang = languageSelect.value;
     const code = view.state.doc.toString();
-    outputDiv.innerText += "Running...\n";
+    outputDiv.innerText += `Running (${lang})...\n`;
 
-    // Redirect stdout
-    pyodide.setStdout({
-        batched: (msg) => {
-            outputDiv.innerText += msg + "\n";
+    if (lang === 'python') {
+        if (!pyodide) {
+            outputDiv.innerText += "Python is still loading...\n> ";
+            return;
         }
-    });
 
-    try {
-        await pyodide.runPythonAsync(code);
-    } catch (err) {
-        outputDiv.innerText += `Error:\n${err}`;
+        // Redirect stdout
+        pyodide.setStdout({
+            batched: (msg) => {
+                outputDiv.innerText += msg + "\n";
+            }
+        });
+
+        try {
+            await pyodide.runPythonAsync(code);
+        } catch (err) {
+            outputDiv.innerText += `Error:\n${err}`;
+        }
+    } else if (lang === 'javascript') {
+        // Capture console.log
+        const originalLog = console.log;
+        console.log = (...args) => {
+            outputDiv.innerText += args.join(' ') + "\n";
+            originalLog.apply(console, args);
+        };
+
+        try {
+            // Use new Function to execute in global scope but safer than direct eval
+            new Function(code)();
+        } catch (err) {
+            outputDiv.innerText += `Error:\n${err}`;
+        } finally {
+            console.log = originalLog;
+        }
     }
+
     outputDiv.innerText += "\n> ";
 });
 

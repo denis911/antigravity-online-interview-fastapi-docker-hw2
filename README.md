@@ -5,7 +5,10 @@ An end-to-end real-time collaborative coding interview platform built with FastA
 ## Features
 
 - **Real-time Collaboration**: Multiple users can edit code simultaneously in the same room.
-- **Secure Code Execution**: Code runs entirely in the browser using **Pyodide (WASM)**. No user code is ever executed on the server, ensuring complete isolation and security.
+- **Multi-language Support**:
+    - **Python**: Executed via Pyodide (WASM) in the browser.
+    - **JavaScript**: Executed via the browser's native engine.
+- **Secure Code Execution**: Code runs entirely in the browser. No user code is ever executed on the server.
 - **Modern UI**: Clean, dark-themed interface using TailwindCSS.
 - **No Node.js**: Frontend dependencies are loaded via CDNs.
 
@@ -90,11 +93,16 @@ uv run python export_openapi.py
     Open your browser and navigate to:
     [http://localhost:8000](http://localhost:8000)
 
-3.  **Collaborate**:
+3.  **Select Language**:
+    Use the dropdown in the header to switch between **Python** and **JavaScript**.
+    - **Python**: Standard Python 3.11 environment via Pyodide.
+    - **JavaScript**: Browser-based JavaScript execution. `console.log` output is captured and displayed in the output panel.
+
+4.  **Collaborate**:
     - You will be redirected to a room (e.g., `/room/default-room`).
     - Open the same URL in another tab or window to see real-time updates.
 
-4.  **Run Code**:
+5.  **Run Code**:
     - Type Python code in the editor.
     - Click the **Run Code** button.
     - Output will appear in the right-hand panel.

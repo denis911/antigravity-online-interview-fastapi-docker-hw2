@@ -46,6 +46,11 @@
     <header class="bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
         <h1 class="text-xl font-bold text-blue-400">Antigravity <span class="text-white">Code Interview</span></h1>
         <div class="flex items-center gap-4">
+            <select id="language-select"
+                class="bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:outline-none focus:border-blue-500">
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+            </select>
             <div id="connection-status" class="text-sm text-yellow-500">Connecting...</div>
             <button id="run-btn"
                 class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium transition-colors flex items-center gap-2">
@@ -97,7 +102,7 @@
     </script>
 
     <!-- App Logic -->
-    <script type="module" src="/static/js/app.js"></script>
+    <script type="module" src="/static/js/app.js?v=2"></script>
 </body>
 
 </html>
