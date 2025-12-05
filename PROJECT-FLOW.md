@@ -85,6 +85,7 @@ Begin the initial implementation now.
 # TESTS:
 
 - [x] Integration tests created (`backend/tests/test_integration.py`)
+- [x] Pytest configuration fixed (`backend/tests/conftest.py` added)
 - [x] WebSocket connection verified (Fixed `app.js` imports and added CORS)
 - [x] Manual test script provided (`backend/manual_test.py`)
 
