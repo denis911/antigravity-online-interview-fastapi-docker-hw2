@@ -102,3 +102,9 @@ Begin the initial implementation now.
 - [x] JS execution implemented (client-side)
 - [x] Documentation updated
 
+# Docker:
+
+- [x] Dockerfile created
+- [x] Docker Compose configuration created
+- [x] Documentation updated
+

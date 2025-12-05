@@ -87,7 +87,17 @@ cd backend
 uv run python export_openapi.py
 ```
 
-## Running the Application
+## Running with Docker
+
+1.  **Build and Start**:
+    ```bash
+    docker compose up --build
+    ```
+
+2.  **Access the App**:
+    Open [http://localhost:8000](http://localhost:8000) in your browser.
+
+## Running Locally (without Docker)
 
 1.  **Start the Backend**:
     From the `backend` directory:
