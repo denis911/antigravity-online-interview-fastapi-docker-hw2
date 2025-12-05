@@ -5,7 +5,7 @@ An end-to-end real-time collaborative coding interview platform built with FastA
 ## Features
 
 - **Real-time Collaboration**: Multiple users can edit code simultaneously in the same room.
-- **Code Execution**: Run Python code directly in the browser using Pyodide (WebAssembly).
+- **Secure Code Execution**: Code runs entirely in the browser using **Pyodide (WASM)**. No user code is ever executed on the server, ensuring complete isolation and security.
 - **Modern UI**: Clean, dark-themed interface using TailwindCSS.
 - **No Node.js**: Frontend dependencies are loaded via CDNs.
 
