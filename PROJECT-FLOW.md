@@ -109,3 +109,4 @@ Begin the initial implementation now.
 - [x] .dockerignore created to prevent venv conflicts
 - [x] Documentation updated
 
+# Deploy online using Render.com

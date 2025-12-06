@@ -99,6 +99,20 @@ uv run python export_openapi.py
 2.  **Access the App**:
     Open [http://localhost:8000](http://localhost:8000) in your browser.
 
+## Deployment
+
+### Render
+
+This project is configured for deployment on [Render](https://render.com).
+
+1.  **Fork/Clone**: Ensure this repository is in your GitHub/GitLab account.
+2.  **Create New Blueprint**:
+    - Go to your Render Dashboard.
+    - Click **New +** -> **Blueprint**.
+    - Connect your repository.
+    - Render will automatically detect `render.yaml` and configure the service.
+3.  **Done**: Your application will be deployed. Render automagically sets the `PORT` environment variable which `uvicorn` will listen on.
+
 ## Running Locally (without Docker)
 
 1.  **Start the Backend**:
