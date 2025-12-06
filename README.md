@@ -1,4 +1,4 @@
-# Antigravity Coding Interview Platform
+# Coding Interview Platform
 
 An end-to-end, real-time collaborative coding interview platform designed for simplicity, privacy, and ease of deployment.
 
