@@ -41,14 +41,23 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 @app.get("/", response_class=HTMLResponse)
 async def get_home(request: Request):
     """
-    Renders the homepage where users can join/create a room.
+    Renders the homepage.
+
+    Returns:
+        TemplateResponse: The index.html template.
     """
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/room/{room_id}", response_class=HTMLResponse)
 async def get_room(request: Request, room_id: str):
     """
-    Renders the coding room.
+    Renders the collaborative coding room.
+
+    Args:
+        room_id (str): The unique identifier for the room.
+
+    Returns:
+        TemplateResponse: The index.html template with room_id context.
     """
     return templates.TemplateResponse("index.html", {"request": request, "room_id": room_id})
 
@@ -56,6 +65,16 @@ async def get_room(request: Request, room_id: str):
 async def websocket_endpoint(websocket: WebSocket, room_id: str, client_id: str):
     """
     WebSocket endpoint for real-time collaboration.
+    
+    Handles:
+    - Connection establishment
+    - Message broadcasting
+    - Disconnection cleanup
+
+    Args:
+        websocket (WebSocket): The active WebSocket connection.
+        room_id (str): The room identifier.
+        client_id (str): Unique client identifier.
     """
     logger.info(f"WebSocket connection attempt: Room={room_id}, Client={client_id}")
     await manager.connect(websocket, room_id)

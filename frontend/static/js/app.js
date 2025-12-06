@@ -108,8 +108,9 @@ socket.onmessage = (event) => {
 
     if (data.type === "init" || data.type === "update") {
         const currentContent = view.state.doc.toString();
+        // Only update if content is different to avoid cursor jumping or infinite loops
         if (currentContent !== data.content) {
-            isRemoteUpdate = true;
+            isRemoteUpdate = true; // Lock local updates to prevent echo
             const transaction = view.state.update({
                 changes: { from: 0, to: currentContent.length, insert: data.content }
             });
@@ -140,7 +141,8 @@ runBtn.addEventListener('click', async () => {
             return;
         }
 
-        // Redirect stdout
+        // Redirect python stdout to our output div
+        // This allows print() statements to be visible in the UI
         pyodide.setStdout({
             batched: (msg) => {
                 outputDiv.innerText += msg + "\n";
@@ -153,7 +155,8 @@ runBtn.addEventListener('click', async () => {
             outputDiv.innerText += `Error:\n${err}`;
         }
     } else if (lang === 'javascript') {
-        // Capture console.log
+        // Capture console.log output
+        // We override the default console.log to intercept messages
         const originalLog = console.log;
         console.log = (...args) => {
             outputDiv.innerText += args.join(' ') + "\n";

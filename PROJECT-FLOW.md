@@ -1,7 +1,10 @@
-# Initial Prompt
+# Initial Prompt (Completed & Deployed)
 
 > [!IMPORTANT]
-> Before doing anything, read and load all rules from `AGENTS.md`. Treat `AGENTS.md` as the primary instruction source for this project. You must follow it throughout the entire session.
+> **Status**: Deployed ✅
+> **Live URL**: [https://coding-interview-platform-q4y5.onrender.com/room/default-room](https://coding-interview-platform-q4y5.onrender.com/room/default-room)
+>
+> This project is now a fully functional, containerized application prepared for Render deployment.
 
 ---
 
@@ -110,3 +113,4 @@ Begin the initial implementation now.
 - [x] Documentation updated
 
 # Deploy online using Render.com
+- deployed at https://coding-interview-platform-q4y5.onrender.com/room/default-room ( please note it may be taken offline soon due to inactivity)

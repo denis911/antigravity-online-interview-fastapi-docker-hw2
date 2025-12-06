@@ -1,153 +1,93 @@
-# Coding Interview Platform
+# Antigravity Coding Interview Platform
 
-An end-to-end real-time collaborative coding interview platform built with FastAPI, HTMX, TailwindCSS, and CodeMirror.
+An end-to-end, real-time collaborative coding interview platform designed for simplicity, privacy, and ease of deployment.
 
-## Features
+## Why use this?
 
-- **Real-time Collaboration**: Multiple users can edit code simultaneously in the same room.
-- **Multi-language Support**:
-    - **Python**: Executed via Pyodide (WASM) in the browser.
-    - **JavaScript**: Executed via the browser's native engine.
-- **Secure Code Execution**: Code runs entirely in the browser. No user code is ever executed on the server.
-- **Modern UI**: Clean, dark-themed interface using TailwindCSS.
-- **Simplified Architecture**: No Node.js required. The FastAPI backend serves the frontend directly. No build steps, no complex toolchains—just run and go.
-- **No Node.js**: Frontend dependencies are loaded via CDNs.
+*   **Privacy Focused**: The application is stateless. Once the server stops or restarts, all code and session data is wiped. No databases, no persistent logs.
+*   **Instant Deployment**: Deploys to Render (and other Docker-compatible platforms) in minutes. Spin it up for an interview, shut it down afterwards.
+*   **Zero Client Setup**: Candidates only need a web browser. No plugins, no account creation.
+*   **Full Power**: Supports both Python (via WASM) and JavaScript execution directly in the browser.
+
+## Technology Stack
+
+We deliberately chose a stack that avoids the complexity of modern frontend build chains while delivering a rigorous, production-grade experience.
+
+### Backend: Python & FastAPI
+*   **FastAPI**: Chosen for its speed, automatic OpenAPI documentation, and native WebSocket support.
+*   **Uvicorn**: A lightning-fast ASGI server.
+*   **Python 3.12+**: Leveraging modern Python features.
+*   **No Database**: We use an in-memory `RoomManager` to handle synchronization. This ensures privacy and simplifies operations.
+
+### Frontend: No-Build Architecture
+*   **HTMX**: Handles dynamic interactions without the overhead of React/Vue/Angular.
+*   **TailwindCSS (CDN)**: styling without complex PostCSS build steps.
+*   **CodeMirror 6**: A professional-grade code editor component.
+*   **Pyodide**: Runs a full Python interpreter inside the browser via WebAssembly (WASM). This means users can execute arbitrary Python code **safely** without risking your server security.
+
+## Live Demo
+
+**Deployed for testing purposes at:**
+[https://coding-interview-platform-q4y5.onrender.com/room/default-room](https://coding-interview-platform-q4y5.onrender.com/room/default-room)
+*(Note: This link may go offline as the service is stateless and ephemeral)*
 
 ## Project Structure
 
 ```
 .
 ├── backend/
+│   ├── main.py           # FastAPI app & endpoints
+│   ├── room_manager.py   # WebSocket logic & state management
+│   ├── export_openapi.py # Helper to generate openapi.json
 │   ├── tests/            # Integration tests
-│   │   ├── conftest.py
-│   │   └── test_integration.py
-│   ├── export_openapi.py # Script to generate OpenAPI JSON
-│   ├── main.py           # FastAPI application entry point
-│   ├── room_manager.py   # WebSocket connection manager
-│   └── pyproject.toml    # Python dependencies
+│   ├── pyproject.toml    # Dependencies (uv)
+│   └── uv.lock
 ├── frontend/
-│   ├── static/
+│   ├── static/           # JS & CSS assets
 │   │   └── js/
-│   │       └── app.js    # Frontend logic (CodeMirror, WS, Pyodide)
-│   └── templates/
-│       └── index.html    # Main HTML template
-├── AGENTS.md             # Agent rules
-├── openapi.json          # Static OpenAPI specification
-├── .dockerignore         # Docker build exclusions
-├── PROJECT-FLOW.md       # Project flow and prompt
+│   │       └── app.js    # Client-side logic (Editor, WS, Pyodide)
+│   └── templates/        # Jinja2 HTML templates
+├── render.yaml           # Render deployment blueprint
+├── Dockerfile            # Container definition
+├── AGENTS.md             # AI Agent Context
 └── README.md             # This file
 ```
 
-## Installation
+## Installation & Local Development
 
-This project uses `uv` for dependency management.
+This project uses `uv` for lightning-fast Python package management.
 
-1.  **Install `uv`** (if not already installed):
+1.  **Install uv**:
     ```bash
     pip install uv
     ```
 
-2.  **Sync Dependencies**:
-    Navigate to the `backend` directory and run:
+2.  **Run Locally**:
     ```bash
     cd backend
     uv sync
+    uv run uvicorn main:app --reload
     ```
+    Open [http://localhost:8000](http://localhost:8000).
 
-## Testing
-
-To run the integration tests:
-
-1.  **Install Test Dependencies**:
-    ```bash
-    cd backend
-    uv add pytest httpx
-    ```
-
-2.  **Run Tests**:
-    ```bash
-    uv run pytest
-    ```
-    Or if you encounter issues with output capture:
-    ```bash
-    uv run python manual_test.py
-    ```
-
-## API Documentation
-
-The backend provides automatic interactive API documentation.
-
-- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
-- **OpenAPI JSON**: [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json)
-
-A static copy of the OpenAPI specification is available in the root directory: `openapi.json`.
-You can regenerate it by running:
-```bash
-cd backend
-uv run python export_openapi.py
-```
-
-## Running with Docker
-
-1.  **Build and Start**:
+3.  **Run with Docker**:
     ```bash
     docker compose up --build
     ```
-    *Note: The project includes a `.dockerignore` file to prevent local files (like your local `.venv` or `__pycache__`) from interfering with the container build. This ensures the container always builds in a clean environment.*
 
-2.  **Access the App**:
-    Open [http://localhost:8000](http://localhost:8000) in your browser.
+## Deployment on Render
 
-## Deployment
+This project is configured for one-click deployment on Render.
 
-### Render
+1.  **Fork this repo**.
+2.  **Create Blueprint** on Render dashboard.
+3.  **Connect Repo**: Render detects `render.yaml` and auto-configures the service.
+4.  **Done**: The `PORT` variable is handled automatically.
 
-This project is configured for deployment on [Render](https://render.com).
+**To stop the service:**
+simply suspend or delete the Web Service in the Render dashboard. No data is left behind.
 
-1.  **Fork/Clone**: Ensure this repository is in your GitHub/GitLab account.
-2.  **Create New Blueprint**:
-    - Go to your Render Dashboard.
-    - Click **New +** -> **Blueprint**.
-    - Connect your repository.
-    - Render will automatically detect `render.yaml` and configure the service.
-3.  **Done**: Your application will be deployed. Render automagically sets the `PORT` environment variable which `uvicorn` will listen on.
+## API Documentation
 
-## Running Locally (without Docker)
-
-1.  **Start the Backend**:
-    From the `backend` directory:
-    ```bash
-    uv run uvicorn main:app --reload
-    ```
-
-2.  **Access the App**:
-    Open your browser and navigate to:
-    [http://localhost:8000](http://localhost:8000)
-
-3.  **Select Language**:
-    Use the dropdown in the header to switch between **Python** and **JavaScript**.
-    - **Python**: Standard Python 3.11 environment via Pyodide.
-    - **JavaScript**: Browser-based JavaScript execution. `console.log` output is captured and displayed in the output panel.
-
-4.  **Collaborate**:
-    - You will be redirected to a room (e.g., `/room/default-room`).
-    - Open the same URL in another tab or window to see real-time updates.
-
-5.  **Run Code**:
-    - Type Python code in the editor.
-    - Click the **Run Code** button.
-    - Output will appear in the right-hand panel.
-
-## Verification
-
-Once running, you should see:
-- **Server**: FastAPI backend running on `http://localhost:8000`.
-- **Frontend**: Dark-themed UI with "Antigravity Code Interview" header.
-- **Editor**: CodeMirror editor loaded with Python syntax highlighting.
-- **Execution**: "Run Code" button active (Pyodide loads in background).
-
-## Notes
-
-- **Pyodide Loading**: The first time you load the page, Pyodide may take a few seconds to download the Python environment.
-- **Persistence**: Room state is currently stored in-memory on the server. Restarting the server will clear all code.
+*   **Swagger UI**: `/docs`
+*   **OpenAPI JSON**: `/openapi.json`
